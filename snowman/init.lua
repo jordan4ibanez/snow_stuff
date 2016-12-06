@@ -62,16 +62,11 @@ minetest.register_entity("snowman:snowman", {
 				self.object:setvelocity({x=goal_x,y=-10,z=goal_z})
 				
 				--shoot snowballs
-				if self.attack_timer >= 1 then
-					for _,player in ipairs(minetest.env:get_objects_inside_radius(self.object:getpos(), 2)) do
-						if player:is_player() then
-							player:punch(self.object, 1.0,  {
-								full_punch_interval=1.0,
-								damage_groups = {fleshy=1}
-							}, vec)
-						end
-					end
+				if self.attack_timer >= 2 then
 					self.attack_timer = 0
+					local snowball = minetest.add_entity(pos1, "snowballs:snowball")
+					
+					snowball:setvelocity({x=self.round(math.sin(self.yaw)*(distance*3), 2),y=vec.y * (distance*3),z=self.round(math.cos(self.yaw)*-1*(distance*3), 2)})
 					
 				end
 				--stop it from getting too close
