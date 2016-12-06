@@ -15,9 +15,6 @@ minetest.register_entity("snowballs:snowball", {
     
     on_step = function(self,dtime)
 		local vel = self.object:getvelocity()
-
-		
-		
 		
 		if (vel.x == 0 and self.oldvel.x ~=0) or (vel.z == 0 and self.oldvel.z ~=0) or (vel.y == 0 and self.oldvel.y ~=0) then
 			local pos  = self.object:getpos()
@@ -53,3 +50,21 @@ minetest.register_entity("snowballs:snowball", {
 		self.oldvel = vel		
     end,
 })
+
+minetest.override_item("default:snowblock", {
+    on_construct = function(pos)
+		for i = 1,2 do
+			if minetest.get_node({x=pos.x,y=pos.y-i,z=pos.z}).name ~= "default:snowblock" then
+				return
+			end
+		end
+		
+		--if 3 snow block are placed, this will make snowman
+		
+		for i = 0,2 do
+			minetest.remove_node({x=pos.x,y=pos.y-i,z=pos.z})
+		end
+		minetest.add_entity({x=pos.x,y=pos.y-1,z=pos.z}, "snowman:snowman")
+    end,
+})
+
