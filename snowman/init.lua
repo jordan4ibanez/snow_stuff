@@ -15,12 +15,13 @@ minetest.register_entity("snowman:snowman", {
     on_activate = function(self,dtime)
 		self.object:set_animation({x=90,y=90}, 0, 0, false)
 		self.object:setacceleration({x=0,y=-10,z=0})
-		self.object:setvelocity({x=math.random(-3,3),y=math.random(-3,3),z=math.random(-3,3)})
+		--self.object:setvelocity({x=math.random(-3,3),y=math.random(-3,3),z=math.random(-3,3)}) 
     end,
     round = function(what, precision)
 	   return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
 	end,
     on_step = function(self,dtime)
+		
 		for _,object in ipairs(minetest.env:get_objects_inside_radius(self.object:getpos(), 6)) do
 			self.attack_timer = self.attack_timer + dtime
 			if object:is_player() then
@@ -61,12 +62,30 @@ minetest.register_entity("snowman:snowman", {
 					
 				self.object:setvelocity({x=goal_x,y=-10,z=goal_z})
 				
+				
 				--shoot snowballs
 				if self.attack_timer >= 2 then
 					self.attack_timer = 0
 					local snowball = minetest.add_entity(pos1, "snowballs:snowball")
 					
-					snowball:setvelocity({x=self.round(math.sin(self.yaw)*(distance*3), 2),y=vec.y * (distance*3),z=self.round(math.cos(self.yaw)*-1*(distance*3), 2)})
+					snowball:setvelocity({x=self.round(math.sin(self.yaw)*(distance*3), 2),y=vec.y * (distance*10),z=self.round(math.cos(self.yaw)*-1*(distance*3), 2)})
+					minetest.add_particlespawner({
+						amount = 30,
+						time = 0.1,
+						minpos = {x=pos1.x-0.5,y=pos1.y-0.9,z=pos1.z-0.5},
+						maxpos = {x=pos1.x+0.5,y=pos1.y-0.9,z=pos1.z+0.5},
+						minvel = {x=x*-1, y=3, z=z*-1},
+						maxvel = {x=x*-1, y=5, z=z*-1},
+						minacc = {x=0, y=-10, z=0},
+						maxacc = {x=0, y=-10, z=0},
+						minexptime = 1,
+						maxexptime = 2,
+						minsize = 1,
+						maxsize = 1,
+						collisiondetection = true,
+						vertical = false,
+						texture = "snow_flakes_snowball.png",
+					})
 					
 				end
 				--stop it from getting too close

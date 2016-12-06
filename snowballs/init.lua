@@ -9,17 +9,19 @@ minetest.register_entity("snowballs:snowball", {
     makes_footstep_sound = false,
     oldvel = {x=0,y=0,z=0},
     on_activate = function(self)
-    
+		
 		self.object:setacceleration({x=0,y=-10,z=0})
     end,
     
     on_step = function(self,dtime)
 		local vel = self.object:getvelocity()
+
+		
 		
 		
 		if (vel.x == 0 and self.oldvel.x ~=0) or (vel.z == 0 and self.oldvel.z ~=0) or (vel.y == 0 and self.oldvel.y ~=0) then
 			local pos  = self.object:getpos()
-			for _,player in ipairs(minetest.env:get_objects_inside_radius(pos, 1)) do
+			for _,player in ipairs(minetest.env:get_objects_inside_radius(pos, 2)) do
 				if player:is_player() then
 					player:punch(self.object, 1.0,  {
 						full_punch_interval=1.0,
